@@ -8,7 +8,6 @@ using QuickFix.Store;
 using QuickFix.Transport;
 
 namespace OrderGenerator.Infrastructure;
-
 public static class DependencyInjection
 {
     public static IServiceCollection AddInfrastructure(this IServiceCollection services, IConfiguration configuration)
