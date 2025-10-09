@@ -216,35 +216,46 @@ const OrderForm = () => {
                 <div className={`result-container ${getStatusClass(result.status || result.Status)}`}>
                     <h3>Resultado da Ordem</h3>
                     <div className="result-details">
+                        {/* Primeira linha com 4 colunas */}
                         <div className="result-row">
-                            <span>Status:</span>
-                            <strong className={`status-${getStatusClass(result.status || result.Status)}`}>
-                                {formatStatus(result.status || result.Status)}
-                            </strong>
+                            <div className="result-column">
+                                <span className="label">Status:</span>
+                                <strong className={`status-${getStatusClass(result.status || result.Status)}`}>
+                                    {formatStatus(result.status || result.Status)}
+                                </strong>
+                            </div>
+                            <div className="result-column">
+                                <span className="label">Order ID:</span>
+                                <span className="value">{result.OrderID || result.orderID || 'N/A'}</span>
+                            </div>
+                            <div className="result-column">
+                                <span className="label">Símbolo:</span>
+                                <span className="value">{result.symbol || result.Symbol}</span>
+                            </div>
+                            <div className="result-column">
+                                <span className="label">Lado:</span>
+                                <span className="value">{formatSide(result.side || result.Side)}</span>
+                            </div>
                         </div>
+
+                        {/* Segunda linha com 4 colunas */}
                         <div className="result-row">
-                            <span>Order ID:</span>
-                            <span>{result.OrderID || result.orderID || 'N/A'}</span>
-                        </div>
-                        <div className="result-row">
-                            <span>Símbolo:</span>
-                            <span>{result.symbol || result.Symbol}</span>
-                        </div>
-                        <div className="result-row">
-                            <span>Lado:</span>
-                            <span>{formatSide(result.side || result.Side)}</span>
-                        </div>
-                        <div className="result-row">
-                            <span>Quantidade:</span>
-                            <span>{result.quantity || result.Quantity}</span>
-                        </div>
-                        <div className="result-row">
-                            <span>Preço:</span>
-                            <span>{formatCurrency(result.price || result.Price)}</span>
-                        </div>
-                        <div className="result-row">
-                            <span>Mensagem:</span>
-                            <span>{result.message || result.Message}</span>
+                            <div className="result-column">
+                                <span className="label">Quantidade:</span>
+                                <span className="value">{result.quantity || result.Quantity}</span>
+                            </div>
+                            <div className="result-column">
+                                <span className="label">Preço:</span>
+                                <span className="value">{formatCurrency(result.price || result.Price)}</span>
+                            </div>
+                            <div className="result-column">
+                                <span className="label">Vl Total:</span>
+                                <span className="value">{formatCurrency(calculateTotal())}</span>
+                            </div>
+                            <div className="result-column">
+                                <span className="label">Mensagem:</span>
+                                <span className="value">{result.message || result.Message}</span>
+                            </div>
                         </div>
                     </div>
 

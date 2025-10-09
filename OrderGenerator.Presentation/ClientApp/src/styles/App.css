@@ -247,21 +247,45 @@ main {
 .result-details {
     display: flex;
     flex-direction: column;
-    gap: 0.5rem;
+    gap: 1rem;
 }
 
 .result-row {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    padding: 0.4rem 0;
-    border-bottom: 1px solid #ecf0f1;
-    font-size: 0.9rem;
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr 1fr;
+    gap: 1rem;
+    align-items: start;
 }
+
+.result-column {
+    display: flex;
+    flex-direction: column;
+    gap: 0.25rem;
+}
+
+    .result-column .label {
+        font-size: 0.8rem;
+        color: #7f8c8d;
+        font-weight: 500;
+    }
+
+    .result-column .value {
+        font-size: 0.9rem;
+        color: #2c3e50;
+        word-break: break-word;
+    }
 
     .result-row:last-child {
         border-bottom: none;
     }
+
+/* Para telas menores */
+@media (max-width: 768px) {
+    .result-row {
+        grid-template-columns: 1fr 1fr;
+        gap: 0.75rem;
+    }
+}
 
 .status-new {
     color: #27ae60;
