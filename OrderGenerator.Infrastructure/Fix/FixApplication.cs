@@ -60,7 +60,7 @@ public class FixApplication : MessageCracker, IApplication, IFixMessageService
     {
         try
         {
-            var clOrdID = message.ClOrdID.getValue();
+            var orderId = message.OrderID.getValue();
             var execType = message.ExecType.getValue();
             var symbol = message.Symbol.getValue();
             var side = message.Side.getValue();
@@ -71,7 +71,7 @@ public class FixApplication : MessageCracker, IApplication, IFixMessageService
 
             var result = new
             {
-                ClOrdID = clOrdID,
+                OrderID = orderId,
                 ExecType = execType.ToString(),
                 Symbol = symbol,
                 Side = sideDescription,
@@ -83,14 +83,14 @@ public class FixApplication : MessageCracker, IApplication, IFixMessageService
 
             var resultJson = System.Text.Json.JsonSerializer.Serialize(result);
 
-            if (_pendingOrders.TryGetValue(clOrdID, out var tcs))
+            if (_pendingOrders.TryGetValue(orderId, out var tcs))
             {
                 tcs.TrySetResult(resultJson);
-                _logger.LogInformation("Order {OrderId} processed with status: {Status}", clOrdID, result.Status);
+                _logger.LogInformation("Order {clOrdID} processed with status: {Status}", orderId, result.Status);
             }
             else
             {
-                _logger.LogWarning("Received response for unknown order: {OrderId}", clOrdID);
+                _logger.LogWarning("Received response for unknown order: {clOrdID}", orderId);
             }
         }
         catch (Exception ex)
@@ -118,7 +118,7 @@ public class FixApplication : MessageCracker, IApplication, IFixMessageService
             var newOrder = CreateNewOrderSingle(order);
             sessionID.Send(newOrder);
 
-            _logger.LogInformation("Order {OrderId} sent via FIX - Symbol: {Symbol}, Side: {Side}, Qty: {Quantity}, Price: {Price}",
+            _logger.LogInformation("Order {clOrdID} sent via FIX - Symbol: {Symbol}, Side: {Side}, Qty: {Quantity}, Price: {Price}",
                 clOrdID, order.Symbol, order.Side, order.Quantity, order.Price);
 
             // Wait for response with timeout

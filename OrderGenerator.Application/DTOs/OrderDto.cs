@@ -10,7 +10,7 @@ public class OrderDto
 
 public class OrderResponseDto
 {
-    public string clOrdID { get; set; }
+    public string OrderID { get; set; }
     public string ExecType { get; set; }
     public string Symbol { get; set; }
     public string Side { get; set; }

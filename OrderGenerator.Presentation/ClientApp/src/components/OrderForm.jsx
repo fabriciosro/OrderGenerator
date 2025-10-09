@@ -21,14 +21,15 @@ const OrderForm = () => {
         try {
             const apiData = {
                 Symbol: data.simbolo,
-                Side: data.lado === 'COMPRA' ? 1 : 2, 
+                Side: data.lado === 'COMPRA' ? 1 : 2,
                 Quantity: parseFloat(data.quantidade),
                 Price: parseFloat(data.preco)
             }
 
-            console.log("teste 1");
+            console.log("Enviando ordem:", apiData);
 
             const response = await orderService.createOrder(apiData)
+            console.log("Resposta recebida:", response); // Debug
             setResult(response)
         } catch (error) {
             setResult({
@@ -51,6 +52,38 @@ const OrderForm = () => {
         const quantity = parseFloat(watch('quantidade') || 0)
         const price = parseFloat(watch('preco') || 0)
         return quantity * price
+    }
+
+    // Função para determinar a classe CSS baseada no status
+    const getStatusClass = (status) => {
+        if (!status) return 'unknown';
+
+        const statusLower = status.toLowerCase();
+        if (statusLower === 'new') return 'new';
+        if (statusLower === 'rejected') return 'rejected';
+        if (statusLower === 'error') return 'error';
+        return 'unknown';
+    }
+
+    // Função para formatar o lado para português
+    const formatSide = (side) => {
+        if (!side) return 'Desconhecido';
+
+        const sideLower = side.toLowerCase();
+        if (sideLower === 'compra' || sideLower === 'buy') return 'Compra';
+        if (sideLower === 'venda' || sideLower === 'sell') return 'Venda';
+        return side;
+    }
+
+    // Função para formatar o status para português
+    const formatStatus = (status) => {
+        if (!status) return 'Desconhecido';
+
+        const statusLower = status.toLowerCase();
+        if (statusLower === 'new') return 'Aceita';
+        if (statusLower === 'rejected') return 'Rejeitada';
+        if (statusLower === 'error') return 'Erro';
+        return status;
     }
 
     return (
@@ -181,40 +214,50 @@ const OrderForm = () => {
             </form>
 
             {result && (
-                <div className={`result-container ${result.Status?.toLowerCase()}`}>
+                <div className={`result-container ${getStatusClass(result.status || result.Status)}`}>
                     <h3>Resultado da Ordem</h3>
                     <div className="result-details">
                         <div className="result-row">
                             <span>Status:</span>
-                            <strong className={`status-${result.Status?.toLowerCase()}`}>
-                                {result.Status}
+                            <strong className={`status-${getStatusClass(result.status || result.Status)}`}>
+                                {formatStatus(result.status || result.Status)}
                             </strong>
                         </div>
                         <div className="result-row">
                             <span>Order ID:</span>
-                            <span>{result.clOrdID || result.OrderId}</span>
+                            <span>{result.OrderID || result.orderID || 'N/A'}</span>
                         </div>
                         <div className="result-row">
                             <span>Símbolo:</span>
-                            <span>{result.Symbol}</span>
+                            <span>{result.symbol || result.Symbol}</span>
                         </div>
                         <div className="result-row">
                             <span>Lado:</span>
-                            <span>{result.Side === 'Buy' ? 'Compra' : 'Venda'}</span>
+                            <span>{formatSide(result.side || result.Side)}</span>
                         </div>
                         <div className="result-row">
                             <span>Quantidade:</span>
-                            <span>{result.Quantity}</span>
+                            <span>{result.quantity || result.Quantity}</span>
                         </div>
                         <div className="result-row">
                             <span>Preço:</span>
-                            <span>{result.Price && formatCurrency(result.Price)}</span>
+                            <span>{formatCurrency(result.price || result.Price)}</span>
                         </div>
                         <div className="result-row">
                             <span>Mensagem:</span>
-                            <span>{result.Message}</span>
+                            <span>{result.message || result.Message}</span>
                         </div>
                     </div>
+
+                    {/* Debug: Mostrar o objeto completo para verificação */}
+                    {process.env.NODE_ENV === 'development' && (
+                        <details style={{ marginTop: '1rem', padding: '0.5rem', background: '#f5f5f5', borderRadius: '4px' }}>
+                            <summary style={{ cursor: 'pointer', fontWeight: 'bold' }}>Debug (Response Completo)</summary>
+                            <pre style={{ marginTop: '0.5rem', fontSize: '0.8rem', whiteSpace: 'pre-wrap' }}>
+                                {JSON.stringify(result, null, 2)}
+                            </pre>
+                        </details>
+                    )}
                 </div>
             )}
         </div>
