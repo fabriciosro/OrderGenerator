@@ -25,12 +25,9 @@ export const exposureService = {
     // Reset exposições
     async resetAccumulator() {
         try {
-            console.log('SERVICE: Resetando accumulator...');
-            const response = await axios.post(`${API_BASE_URL}/reset`);
-            console.log('SERVICE: Reset response:', response.data);
+            const response = await axios.post(`${API_BASE_URL}/exposures`);
             return response.data;
         } catch (error) {
-            console.log('SERVICE: Erro no reset:', error);
             if (error.response) {
                 const message = error.response.data?.message ||
                     error.response.data?.error ||

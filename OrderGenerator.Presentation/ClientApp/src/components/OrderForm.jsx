@@ -36,6 +36,8 @@ const OrderForm = () => {
             console.log("Resposta recebida:", response);
             setResult(response)
 
+            await handleGetExposures();
+
         } catch (error) {
             setResult({
                 Status: 'Error',
@@ -131,7 +133,7 @@ const OrderForm = () => {
         try {
             const response = await exposureService.resetAccumulator();
             console.log("Reset response:", response);
-            alert(response.message || "Reset realizado com sucesso");
+/*            alert(response.message || "Reset realizado com sucesso");*/
 
             // Recarregar as exposições após o reset
             await handleGetExposures();
@@ -293,21 +295,6 @@ const OrderForm = () => {
                         disabled={loading}
                     >
                         Limpar
-                    </button>
-                    <button
-                        type="button"
-                        onClick={handleGetExposures}
-                        className="btn-info"
-                        disabled={loadingExposures}
-                    >
-                        {loadingExposures ? (
-                            <>
-                                <span className="spinner"></span>
-                                Buscando...
-                            </>
-                        ) : (
-                            'Ver Exposições'
-                        )}
                     </button>
                     <button
                         type="button"

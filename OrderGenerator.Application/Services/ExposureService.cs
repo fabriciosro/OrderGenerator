@@ -70,7 +70,7 @@ public class ExposureService : IExposureService
             using var client = new HttpClient(handler);
 
             // Chamar o endpoint de reset do OrderAccumulator (POST sem body)
-            var response = await client.PostAsync("https://localhost:5000/api/Reset", null);
+            var response = await client.PostAsync("https://localhost:5000/api/Exposure", null);
 
             if (response.IsSuccessStatusCode)
             {
