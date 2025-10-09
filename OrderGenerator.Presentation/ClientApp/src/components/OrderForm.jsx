@@ -19,7 +19,16 @@ const OrderForm = () => {
         setResult(null)
 
         try {
-            const response = await orderService.createOrder(data)
+            const apiData = {
+                Symbol: data.simbolo,
+                Side: data.lado === 'COMPRA' ? 1 : 2, 
+                Quantity: parseFloat(data.quantidade),
+                Price: parseFloat(data.preco)
+            }
+
+            console.log("teste 1");
+
+            const response = await orderService.createOrder(apiData)
             setResult(response)
         } catch (error) {
             setResult({
@@ -54,7 +63,7 @@ const OrderForm = () => {
                         <div className="form-group">
                             <label htmlFor="simbolo">Símbolo *</label>
                             <select
-                                id="symbol"
+                                id="simbolo"
                                 {...register('simbolo', { required: 'Símbolo é obrigatório' })}
                                 className={errors.simbolo ? 'error' : ''}
                             >
@@ -71,7 +80,7 @@ const OrderForm = () => {
                         <div className="form-group">
                             <label htmlFor="lado">Lado *</label>
                             <select
-                                id="side"
+                                id="lado"
                                 {...register('lado', { required: 'Lado é obrigatório' })}
                                 className={errors.lado ? 'error' : ''}
                             >
@@ -89,7 +98,7 @@ const OrderForm = () => {
                         <div className="form-group">
                             <label htmlFor="quantidade">Quantidade *</label>
                             <input
-                                id="quantity"
+                                id="quantidade"
                                 type="number"
                                 step="1"
                                 min="1"
@@ -112,7 +121,7 @@ const OrderForm = () => {
                         <div className="form-group">
                             <label htmlFor="preco">Preço *</label>
                             <input
-                                id="price"
+                                id="preco"
                                 type="number"
                                 step="0.01"
                                 min="0.01"
@@ -183,7 +192,7 @@ const OrderForm = () => {
                         </div>
                         <div className="result-row">
                             <span>Order ID:</span>
-                            <span>{result.OrderId}</span>
+                            <span>{result.clOrdID || result.OrderId}</span>
                         </div>
                         <div className="result-row">
                             <span>Símbolo:</span>
@@ -191,7 +200,7 @@ const OrderForm = () => {
                         </div>
                         <div className="result-row">
                             <span>Lado:</span>
-                            <span>{result.Side}</span>
+                            <span>{result.Side === 'Buy' ? 'Compra' : 'Venda'}</span>
                         </div>
                         <div className="result-row">
                             <span>Quantidade:</span>

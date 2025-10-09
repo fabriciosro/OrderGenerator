@@ -1,8 +1,5 @@
-﻿using OrderGenerator.Application.Interfaces;
-using OrderGenerator.Application.Services;
-using OrderGenerator.Infrastructure;
+﻿using OrderGenerator.Infrastructure;
 using OrderGenerator.Presentation;
-using System.Diagnostics;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -39,6 +36,21 @@ builder.Services.AddSpaStaticFiles(configuration =>
     configuration.RootPath = "wwwroot";
 });
 
+builder.Services.AddHttpsRedirection(options =>
+{
+    options.RedirectStatusCode = StatusCodes.Status307TemporaryRedirect;
+    options.HttpsPort = 7001;
+});
+
+builder.WebHost.ConfigureKestrel(options =>
+{
+    options.ListenLocalhost(7001, listenOptions =>
+    {
+        listenOptions.UseHttps();
+    });
+    options.ListenLocalhost(5002);
+});
+
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.
@@ -51,6 +63,8 @@ if (app.Environment.IsDevelopment())
 app.UseCors();
 app.UseStaticFiles();
 app.UseSpaStaticFiles();
+
+app.UseHttpsRedirection();
 
 app.MapControllers();
 

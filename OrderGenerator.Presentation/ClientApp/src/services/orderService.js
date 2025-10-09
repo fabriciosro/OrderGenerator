@@ -1,31 +1,43 @@
 ﻿import axios from 'axios';
 
-const API_BASE_URL = 'https://localhost:5000/api';
-
-axios.defaults.timeout = 30000;
+const API_BASE_URL = 'https://localhost:7001/api';
 
 export const orderService = {
+    // Criar nova ordem
     async createOrder(orderData) {
         try {
-            const response = await axios.post(`${API_BASE_URL}/Orders`, orderData);
+            const response = await axios.post(`${API_BASE_URL}/orders`, orderData);
             return response.data;
         } catch (error) {
             if (error.response) {
-                throw new Error(error.response.data.error || 'Erro no servidor');
+                const message = error.response.data?.message ||
+                    error.response.data?.Title ||
+                    'Erro ao criar ordem';
+                throw new Error(message);
             } else if (error.request) {
-                throw new Error('Sem resposta do servidor. Verifique se o OrderAccumulator está executando.');
+                throw new Error('Erro de conexão com a API');
             } else {
-                throw new Error('Erro ao processar requisição');
+                throw new Error('Erro inesperado');
             }
         }
     },
 
+    // Buscar exposições
     async getExposures() {
         try {
             const response = await axios.get(`${API_BASE_URL}/exposure`);
             return response.data;
         } catch (error) {
-            throw new Error('Erro ao buscar exposições');
+            if (error.response) {
+                const message = error.response.data?.message ||
+                    error.response.data?.Title ||
+                    'Erro ao buscar exposições';
+                throw new Error(message);
+            } else if (error.request) {
+                throw new Error('Erro de conexão com a API');
+            } else {
+                throw new Error('Erro inesperado');
+            }
         }
     }
 };

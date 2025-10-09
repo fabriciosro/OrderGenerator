@@ -150,7 +150,7 @@ public class FixApplication : MessageCracker, IApplication, IFixMessageService
         var newOrder = new NewOrderSingle(
             new ClOrdID(order.ClOrdID.ToString()),
             new Symbol(order.Symbol),
-            new Side(order.Side == OrderSide.Buy ? '1' : '2'),
+            new Side((OrderSide)order.Side == OrderSide.Buy ? '1' : '2'),
             new TransactTime(DateTime.UtcNow),
             new OrdType(OrdType.LIMIT));
 

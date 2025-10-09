@@ -4,9 +4,9 @@ namespace OrderGenerator.Domain.Entities;
 
 public class Order
 {
-    public Guid ClOrdID { get; private set; }
+    public Guid ClOrdID { get; set; }
     public string Symbol { get; private set; }
-    public OrderSide Side { get; private set; }
+    public int Side { get; private set; }
     public decimal Quantity { get; private set; }
     public decimal Price { get; private set; }
     public DateTime CreatedAt { get; private set; }
@@ -14,7 +14,7 @@ public class Order
 
     private Order() { }
 
-    public Order(string symbol, OrderSide side, decimal quantity, decimal price)
+    public Order(string symbol, int side, decimal quantity, decimal price)
     {
         ClOrdID = Guid.NewGuid();
         Symbol = symbol;

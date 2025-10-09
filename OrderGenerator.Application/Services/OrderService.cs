@@ -17,9 +17,7 @@ public class OrderService : IOrderService
 
     public async Task<OrderResponseDto> CreateOrderAsync(OrderDto orderDto)
     {
-        var orderSide = orderDto.Side.Equals("COMPRA", StringComparison.CurrentCultureIgnoreCase) ? OrderSide.Buy : OrderSide.Sell;
-
-        var order = new Order(orderDto.Symbol, orderSide, orderDto.Quantity, orderDto.Price);
+        var order = new Order(orderDto.Symbol, orderDto.Side, orderDto.Quantity, orderDto.Price);
 
         var result = await _fixMessageService.SendNewOrderSingleAsync(order);
 

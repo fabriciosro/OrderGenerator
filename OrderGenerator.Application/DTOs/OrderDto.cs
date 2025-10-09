@@ -2,9 +2,8 @@
 
 public class OrderDto
 {
-    public string clOrdID { get; set; }
     public string Symbol { get; set; }
-    public string Side { get; set; }
+    public int Side { get; set; }
     public decimal Quantity { get; set; }
     public decimal Price { get; set; }
 }
