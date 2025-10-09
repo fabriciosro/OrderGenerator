@@ -54,7 +54,7 @@ const OrderForm = () => {
                         <div className="form-group">
                             <label htmlFor="simbolo">Símbolo *</label>
                             <select
-                                id="simbolo"
+                                id="symbol"
                                 {...register('simbolo', { required: 'Símbolo é obrigatório' })}
                                 className={errors.simbolo ? 'error' : ''}
                             >
@@ -71,7 +71,7 @@ const OrderForm = () => {
                         <div className="form-group">
                             <label htmlFor="lado">Lado *</label>
                             <select
-                                id="lado"
+                                id="side"
                                 {...register('lado', { required: 'Lado é obrigatório' })}
                                 className={errors.lado ? 'error' : ''}
                             >
@@ -89,7 +89,7 @@ const OrderForm = () => {
                         <div className="form-group">
                             <label htmlFor="quantidade">Quantidade *</label>
                             <input
-                                id="quantidade"
+                                id="quantity"
                                 type="number"
                                 step="1"
                                 min="1"
@@ -112,7 +112,7 @@ const OrderForm = () => {
                         <div className="form-group">
                             <label htmlFor="preco">Preço *</label>
                             <input
-                                id="preco"
+                                id="price"
                                 type="number"
                                 step="0.01"
                                 min="0.01"

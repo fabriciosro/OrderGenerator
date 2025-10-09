@@ -57,7 +57,7 @@ app.MapControllers();
 // SPA fallback
 app.MapFallbackToFile("index.html");
 
-var port = 5000;
+var port = 5002;
 var url = $"http://localhost:{port}";
 
 app.Run(url);

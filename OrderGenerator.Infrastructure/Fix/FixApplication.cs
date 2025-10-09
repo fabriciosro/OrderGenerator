@@ -60,7 +60,7 @@ public class FixApplication : MessageCracker, IApplication, IFixMessageService
     {
         try
         {
-            var orderId = message.ClOrdID.getValue();
+            var clOrdID = message.ClOrdID.getValue();
             var execType = message.ExecType.getValue();
             var symbol = message.Symbol.getValue();
             var side = message.Side.getValue();
@@ -71,7 +71,7 @@ public class FixApplication : MessageCracker, IApplication, IFixMessageService
 
             var result = new
             {
-                OrderId = orderId,
+                ClOrdID = clOrdID,
                 ExecType = execType.ToString(),
                 Symbol = symbol,
                 Side = sideDescription,
@@ -83,14 +83,14 @@ public class FixApplication : MessageCracker, IApplication, IFixMessageService
 
             var resultJson = System.Text.Json.JsonSerializer.Serialize(result);
 
-            if (_pendingOrders.TryGetValue(orderId, out var tcs))
+            if (_pendingOrders.TryGetValue(clOrdID, out var tcs))
             {
                 tcs.TrySetResult(resultJson);
-                _logger.LogInformation("Order {OrderId} processed with status: {Status}", orderId, result.Status);
+                _logger.LogInformation("Order {OrderId} processed with status: {Status}", clOrdID, result.Status);
             }
             else
             {
-                _logger.LogWarning("Received response for unknown order: {OrderId}", orderId);
+                _logger.LogWarning("Received response for unknown order: {OrderId}", clOrdID);
             }
         }
         catch (Exception ex)
@@ -109,17 +109,17 @@ public class FixApplication : MessageCracker, IApplication, IFixMessageService
             throw new ApplicationException("FIX session not available");
         }
 
-        var orderId = order.Id.ToString();
+        var clOrdID = order.ClOrdID.ToString();
         var tcs = new TaskCompletionSource<string>();
-        _pendingOrders[orderId] = tcs;
+        _pendingOrders[clOrdID] = tcs;
 
         try
         {
-            var newOrder = CreateNewOrderSingle(order, orderId);
+            var newOrder = CreateNewOrderSingle(order);
             sessionID.Send(newOrder);
 
             _logger.LogInformation("Order {OrderId} sent via FIX - Symbol: {Symbol}, Side: {Side}, Qty: {Quantity}, Price: {Price}",
-                orderId, order.Symbol, order.Side, order.Quantity, order.Price);
+                clOrdID, order.Symbol, order.Side, order.Quantity, order.Price);
 
             // Wait for response with timeout
             var timeoutTask = Task.Delay(TimeSpan.FromSeconds(10));
@@ -139,22 +139,21 @@ public class FixApplication : MessageCracker, IApplication, IFixMessageService
         }
         finally
         {
-            _pendingOrders.Remove(orderId);
+            _pendingOrders.Remove(clOrdID);
         }
     }
     #endregion
 
     #region Private Methods
-    private NewOrderSingle CreateNewOrderSingle(Order order, string orderId)
+    private NewOrderSingle CreateNewOrderSingle(Order order)
     {
         var newOrder = new NewOrderSingle(
-            new ClOrdID(orderId),
+            new ClOrdID(order.ClOrdID.ToString()),
             new Symbol(order.Symbol),
             new Side(order.Side == OrderSide.Buy ? '1' : '2'),
             new TransactTime(DateTime.UtcNow),
             new OrdType(OrdType.LIMIT));
 
-        newOrder.Set(new Symbol(order.Symbol));
         newOrder.Set(new OrderQty(order.Quantity));
         newOrder.Set(new Price(order.Price));
         newOrder.Set(new TimeInForce(TimeInForce.DAY));
