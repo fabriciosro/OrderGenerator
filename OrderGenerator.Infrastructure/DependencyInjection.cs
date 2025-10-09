@@ -12,7 +12,6 @@ public static class DependencyInjection
 {
     public static IServiceCollection AddInfrastructure(this IServiceCollection services, IConfiguration configuration)
     {
-        // Register the application as both interfaces
         services.AddSingleton<FixApplication>();
         services.AddSingleton<IFixMessageService>(provider => provider.GetRequiredService<FixApplication>());
         services.AddSingleton<IApplication>(provider => provider.GetRequiredService<FixApplication>());
@@ -22,7 +21,6 @@ public static class DependencyInjection
         {
             try
             {
-                // Removemos o logger da configuração para evitar problemas
                 var settings = new SessionSettings("fix-client.cfg");
                 var storeFactory = new FileStoreFactory(settings);
                 var logFactory = new FileLogFactory(settings);
@@ -32,7 +30,6 @@ public static class DependencyInjection
             }
             catch (Exception ex)
             {
-                // Em caso de erro, lançamos a exceção e deixamos o startup tratar
                 throw new ApplicationException("Failed to create FIX Initiator", ex);
             }
         });

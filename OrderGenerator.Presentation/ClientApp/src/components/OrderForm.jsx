@@ -1,10 +1,13 @@
 ﻿import React, { useState } from 'react'
 import { useForm } from 'react-hook-form'
 import { orderService } from '../services/orderService'
+import { exposureService } from '../services/exposureService'
 
 const OrderForm = () => {
     const [result, setResult] = useState(null)
     const [loading, setLoading] = useState(false)
+    const [exposures, setExposures] = useState([])
+    const [loadingExposures, setLoadingExposures] = useState(false)
 
     const {
         register,
@@ -28,9 +31,11 @@ const OrderForm = () => {
 
             console.log("Enviando ordem:", apiData);
 
+            // Chamar createOrder
             const response = await orderService.createOrder(apiData)
-            console.log("Resposta recebida:", response); // Debug
+            console.log("Resposta recebida:", response);
             setResult(response)
+
         } catch (error) {
             setResult({
                 Status: 'Error',
@@ -38,6 +43,27 @@ const OrderForm = () => {
             })
         } finally {
             setLoading(false)
+        }
+    }
+
+    // Nova função para buscar exposições
+    const handleGetExposures = async () => {
+        setLoadingExposures(true)
+        try {
+            const exposuresData = await exposureService.getExposures()
+            console.log("Exposições recebidas:", exposuresData);
+
+            if (Array.isArray(exposuresData)) {
+                setExposures(exposuresData)
+            } else {
+                console.warn("Exposições não é um array:", exposuresData)
+                setExposures([])
+            }
+        } catch (exposureError) {
+            console.error("Erro ao buscar exposições:", exposureError)
+            setExposures([])
+        } finally {
+            setLoadingExposures(false)
         }
     }
 
@@ -84,6 +110,60 @@ const OrderForm = () => {
         if (statusLower === 'rejected') return 'Rejeitada';
         if (statusLower === 'error') return 'Erro';
         return status;
+    }
+
+    // Função para formatar o exposure (positivo/negativo)
+    const formatExposure = (exposure) => {
+        return formatCurrency(Math.abs(exposure));
+    }
+
+    // Função para determinar a classe do exposure baseada no valor
+    const getExposureClass = (exposure) => {
+        if (exposure > 0) return 'exposure-positive';
+        if (exposure < 0) return 'exposure-negative';
+        return 'exposure-neutral';
+    }
+
+    // Função segura para renderizar exposições
+    const renderExposures = () => {
+        if (!Array.isArray(exposures) || exposures.length === 0) {
+            return null;
+        }
+
+        return (
+            <div className="exposures-container">
+                <div className="exposures-header">
+                    <h3>Exposições Atuais</h3>
+                    <button
+                        onClick={handleGetExposures}
+                        disabled={loadingExposures}
+                        className="btn-refresh"
+                    >
+                        {loadingExposures ? (
+                            <>
+                                <span className="spinner small"></span>
+                                Atualizando...
+                            </>
+                        ) : (
+                            '↻ Atualizar'
+                        )}
+                    </button>
+                </div>
+                <div className="exposures-grid">
+                    {exposures.map((exposure) => (
+                        <div key={exposure.id} className={`exposure-item ${getExposureClass(exposure.currentExposure)}`}>
+                            <div className="exposure-symbol">{exposure.symbol}</div>
+                            <div className="exposure-value">
+                                {exposure.currentExposure >= 0 ? '+' : '-'}{formatExposure(exposure.currentExposure)}
+                            </div>
+                            <div className="exposure-label">
+                                {exposure.currentExposure >= 0 ? 'Exposição Positiva' : 'Exposição Negativa'}
+                            </div>
+                        </div>
+                    ))}
+                </div>
+            </div>
+        );
     }
 
     return (
@@ -196,6 +276,21 @@ const OrderForm = () => {
                         Limpar
                     </button>
                     <button
+                        type="button"
+                        onClick={handleGetExposures}
+                        className="btn-info"
+                        disabled={loadingExposures}
+                    >
+                        {loadingExposures ? (
+                            <>
+                                <span className="spinner"></span>
+                                Buscando...
+                            </>
+                        ) : (
+                            'Ver Exposições'
+                        )}
+                    </button>
+                    <button
                         type="submit"
                         disabled={loading}
                         className="btn-primary"
@@ -270,6 +365,9 @@ const OrderForm = () => {
                     )}
                 </div>
             )}
+
+            {/* Renderizar exposições de forma segura */}
+            {renderExposures()}
         </div>
     )
 }

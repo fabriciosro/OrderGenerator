@@ -142,6 +142,7 @@ public class FixApplication : MessageCracker, IApplication, IFixMessageService
             _pendingOrders.Remove(clOrdID);
         }
     }
+
     #endregion
 
     #region Private Methods
