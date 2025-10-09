@@ -124,6 +124,25 @@ const OrderForm = () => {
         return 'exposure-neutral';
     }
 
+    const [resetting, setResetting] = useState(false);
+
+    const handleResetAccumulator = async () => {
+        setResetting(true);
+        try {
+            const response = await exposureService.resetAccumulator();
+            console.log("Reset response:", response);
+            alert(response.message || "Reset realizado com sucesso");
+
+            // Recarregar as exposições após o reset
+            await handleGetExposures();
+        } catch (error) {
+            console.error("Erro no reset:", error);
+            alert("Erro ao resetar: " + error.message);
+        } finally {
+            setResetting(false);
+        }
+    };
+
     // Função segura para renderizar exposições
     const renderExposures = () => {
         if (!Array.isArray(exposures) || exposures.length === 0) {
@@ -288,6 +307,21 @@ const OrderForm = () => {
                             </>
                         ) : (
                             'Ver Exposições'
+                        )}
+                    </button>
+                    <button
+                        type="button"
+                        onClick={handleResetAccumulator}
+                        className="btn-warning"
+                        disabled={resetting}
+                    >
+                        {resetting ? (
+                            <>
+                                <span className="spinner"></span>
+                                Resetando...
+                            </>
+                        ) : (
+                            'Resetar Exposições'
                         )}
                     </button>
                     <button

@@ -34,7 +34,12 @@ public class ExposureService : IExposureService
             var content = await response.Content.ReadAsStringAsync();
             _logger.LogInformation("OrderAccumulator API response received");
 
-            var exposures = System.Text.Json.JsonSerializer.Deserialize<List<ExposureDto>>(content);
+            var options = new System.Text.Json.JsonSerializerOptions
+            {
+                PropertyNameCaseInsensitive = true
+            };
+
+            var exposures = System.Text.Json.JsonSerializer.Deserialize<List<ExposureDto>>(content, options);
             return exposures ?? new List<ExposureDto>();
         }
         catch (Exception ex)
@@ -48,6 +53,46 @@ public class ExposureService : IExposureService
                 new ExposureDto { Symbol = "VALE3", CurrentExposure = 50000000, Id = Guid.NewGuid() },
                 new ExposureDto { Symbol = "VIIA4", CurrentExposure = -25000000, Id = Guid.NewGuid() }
             };
+        }
+    }
+
+    public async Task<string> ResetAccumulatorAsync()
+    {
+        try
+        {
+            _logger.LogInformation("Resetting OrderAccumulator exposures");
+
+            var handler = new HttpClientHandler
+            {
+                ServerCertificateCustomValidationCallback = (message, cert, chain, errors) => true
+            };
+
+            using var client = new HttpClient(handler);
+
+            // Chamar o endpoint de reset do OrderAccumulator (POST sem body)
+            var response = await client.PostAsync("https://localhost:5000/api/Reset", null);
+
+            if (response.IsSuccessStatusCode)
+            {
+                var responseContent = await response.Content.ReadAsStringAsync();
+                _logger.LogInformation("OrderAccumulator reset successfully: {Response}", responseContent);
+
+                // Desserializar a resposta para pegar a mensagem
+                var result = System.Text.Json.JsonSerializer.Deserialize<ResetResponseDto>(responseContent);
+                return result?.Message ?? "Reset completed successfully";
+            }
+            else
+            {
+                var errorContent = await response.Content.ReadAsStringAsync();
+                _logger.LogError("Reset failed with status {StatusCode}: {Error}",
+                    response.StatusCode, errorContent);
+                return $"Reset failed: {response.StatusCode}";
+            }
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError(ex, "Error resetting OrderAccumulator");
+            return $"Reset error: {ex.Message}";
         }
     }
 }

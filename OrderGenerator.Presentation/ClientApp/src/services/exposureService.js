@@ -20,5 +20,27 @@ export const exposureService = {
                 throw new Error('Erro inesperado');
             }
         }
+    },
+
+    // Reset exposições
+    async resetAccumulator() {
+        try {
+            console.log('SERVICE: Resetando accumulator...');
+            const response = await axios.post(`${API_BASE_URL}/reset`);
+            console.log('SERVICE: Reset response:', response.data);
+            return response.data;
+        } catch (error) {
+            console.log('SERVICE: Erro no reset:', error);
+            if (error.response) {
+                const message = error.response.data?.message ||
+                    error.response.data?.error ||
+                    'Erro ao resetar';
+                throw new Error(message);
+            } else if (error.request) {
+                throw new Error('Erro de conexao com a API');
+            } else {
+                throw new Error('Erro inesperado');
+            }
+        }
     }
 };
