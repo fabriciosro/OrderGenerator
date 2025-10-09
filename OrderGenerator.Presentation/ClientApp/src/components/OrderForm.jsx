@@ -92,6 +92,7 @@ const OrderForm = () => {
                 <div className="form-section">
                     <h2>Dados da Ordem</h2>
 
+                    {/* ÚNICO form-row com os 4 campos lado a lado */}
                     <div className="form-row">
                         <div className="form-group">
                             <label htmlFor="simbolo">Símbolo *</label>
@@ -125,9 +126,7 @@ const OrderForm = () => {
                                 <span className="error-message">{errors.lado.message}</span>
                             )}
                         </div>
-                    </div>
 
-                    <div className="form-row">
                         <div className="form-group">
                             <label htmlFor="quantidade">Quantidade *</label>
                             <input
