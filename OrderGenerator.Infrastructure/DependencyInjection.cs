@@ -16,7 +16,6 @@ public static class DependencyInjection
         services.AddSingleton<IFixMessageService>(provider => provider.GetRequiredService<FixApplication>());
         services.AddSingleton<IApplication>(provider => provider.GetRequiredService<FixApplication>());
 
-        // Configure FIX initiator - SEM LOGGER AQUI
         services.AddSingleton(provider =>
         {
             try

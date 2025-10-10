@@ -329,6 +329,13 @@ main {
     }
 }
 
+.no-exposures {
+    text-align: center;
+    padding: 2rem;
+    color: #7f8c8d;
+    font-style: italic;
+}
+
 .exposures-container {
     background: white;
     border-radius: 8px;

@@ -1,4 +1,4 @@
-﻿import React, { useState } from 'react'
+﻿import React, { useState, useEffect } from 'react' // ⬅️ Adicione useEffect
 import { useForm } from 'react-hook-form'
 import { orderService } from '../services/orderService'
 import { exposureService } from '../services/exposureService'
@@ -8,6 +8,7 @@ const OrderForm = () => {
     const [loading, setLoading] = useState(false)
     const [exposures, setExposures] = useState([])
     const [loadingExposures, setLoadingExposures] = useState(false)
+    const [resetting, setResetting] = useState(false)
 
     const {
         register,
@@ -16,6 +17,11 @@ const OrderForm = () => {
         watch,
         reset
     } = useForm()
+
+    // Carregar exposições automaticamente quando o componente montar
+    useEffect(() => {
+        handleGetExposures();
+    }, []); // ⬅️ Array vazio = executa apenas uma vez
 
     const onSubmit = async (data) => {
         setLoading(true)
@@ -36,6 +42,7 @@ const OrderForm = () => {
             console.log("Resposta recebida:", response);
             setResult(response)
 
+            // Atualizar exposições após enviar ordem
             await handleGetExposures();
 
         } catch (error) {
@@ -68,6 +75,21 @@ const OrderForm = () => {
             setLoadingExposures(false)
         }
     }
+
+    const handleResetAccumulator = async () => {
+        setResetting(true);
+        try {
+            const response = await exposureService.resetAccumulator();
+            console.log("Reset response:", response);
+            // Recarregar as exposições após o reset
+            await handleGetExposures();
+        } catch (error) {
+            console.error("Erro no reset:", error);
+            alert("Erro ao resetar: " + error.message);
+        } finally {
+            setResetting(false);
+        }
+    };
 
     const formatCurrency = (value) => {
         return new Intl.NumberFormat('pt-BR', {
@@ -126,47 +148,25 @@ const OrderForm = () => {
         return 'exposure-neutral';
     }
 
-    const [resetting, setResetting] = useState(false);
-
-    const handleResetAccumulator = async () => {
-        setResetting(true);
-        try {
-            const response = await exposureService.resetAccumulator();
-            console.log("Reset response:", response);
-            // Recarregar as exposições após o reset
-            await handleGetExposures();
-        } catch (error) {
-            console.error("Erro no reset:", error);
-            alert("Erro ao resetar: " + error.message);
-        } finally {
-            setResetting(false);
-        }
-    };
-
     // Função segura para renderizar exposições
     const renderExposures = () => {
         if (!Array.isArray(exposures) || exposures.length === 0) {
-            return null;
+            return (
+                <div className="exposures-container">
+                    <div className="exposures-header">
+                        <h3>Exposições Atuais</h3>
+                    </div>
+                    <div className="no-exposures">
+                        <p>Nenhuma exposição encontrada</p>
+                    </div>
+                </div>
+            );
         }
 
         return (
             <div className="exposures-container">
                 <div className="exposures-header">
                     <h3>Exposições Atuais</h3>
-                    <button
-                        onClick={handleGetExposures}
-                        disabled={loadingExposures}
-                        className="btn-refresh"
-                    >
-                        {loadingExposures ? (
-                            <>
-                                <span className="spinner small"></span>
-                                Atualizando...
-                            </>
-                        ) : (
-                            '↻ Atualizar'
-                        )}
-                    </button>
                 </div>
                 <div className="exposures-grid">
                     {exposures.map((exposure) => (
@@ -191,7 +191,6 @@ const OrderForm = () => {
                 <div className="form-section">
                     <h2>Dados da Ordem</h2>
 
-                    {/* ÚNICO form-row com os 4 campos lado a lado */}
                     <div className="form-row">
                         <div className="form-group">
                             <label htmlFor="simbolo">Símbolo *</label>
@@ -330,7 +329,6 @@ const OrderForm = () => {
                 <div className={`result-container ${getStatusClass(result.status || result.Status)}`}>
                     <h3>Resultado da Ordem</h3>
                     <div className="result-details">
-                        {/* Primeira linha com 4 colunas */}
                         <div className="result-row">
                             <div className="result-column">
                                 <span className="label">Status:</span>
@@ -352,7 +350,6 @@ const OrderForm = () => {
                             </div>
                         </div>
 
-                        {/* Segunda linha com 4 colunas */}
                         <div className="result-row">
                             <div className="result-column">
                                 <span className="label">Quantidade:</span>
@@ -372,20 +369,9 @@ const OrderForm = () => {
                             </div>
                         </div>
                     </div>
-
-                    {/* Debug: Mostrar o objeto completo para verificação */}
-                    {/*{process.env.NODE_ENV === 'development' && (*/}
-                    {/*    <details style={{ marginTop: '1rem', padding: '0.5rem', background: '#f5f5f5', borderRadius: '4px' }}>*/}
-                    {/*        <summary style={{ cursor: 'pointer', fontWeight: 'bold' }}>Debug (Response Completo)</summary>*/}
-                    {/*        <pre style={{ marginTop: '0.5rem', fontSize: '0.8rem', whiteSpace: 'pre-wrap' }}>*/}
-                    {/*            {JSON.stringify(result, null, 2)}*/}
-                    {/*        </pre>*/}
-                    {/*    </details>*/}
-                    {/*)}*/}
                 </div>
             )}
 
-            {/* Renderizar exposições de forma segura */}
             {renderExposures()}
         </div>
     )

@@ -5,13 +5,18 @@ VisualStudioVersion = 17.11.35312.102
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "src", "src", "{BC2BC241-26DF-4786-8563-15A17D89D955}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "OrderGenerator.Application", "OrderGenerator.Application\OrderGenerator.Application.csproj", "{996F3DB1-923F-4A2B-9725-2745B1FE17A6}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "OrderGenerator.Application", "OrderGenerator.Application\OrderGenerator.Application.csproj", "{996F3DB1-923F-4A2B-9725-2745B1FE17A6}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "OrderGenerator.Domain", "OrderGenerator.Domain\OrderGenerator.Domain.csproj", "{87DA1123-B82A-4EE6-9815-B8A0C8F73D98}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "OrderGenerator.Domain", "OrderGenerator.Domain\OrderGenerator.Domain.csproj", "{87DA1123-B82A-4EE6-9815-B8A0C8F73D98}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "OrderGenerator.Infrastructure", "OrderGenerator.Infrastructure\OrderGenerator.Infrastructure.csproj", "{13DE25EC-127F-4C0D-BA22-B054891F0337}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "OrderGenerator.Infrastructure", "OrderGenerator.Infrastructure\OrderGenerator.Infrastructure.csproj", "{13DE25EC-127F-4C0D-BA22-B054891F0337}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "OrderGenerator.Presentation", "OrderGenerator.Presentation\OrderGenerator.Presentation.csproj", "{98ADF2F1-4A0D-437C-B265-9F49A90F9D6A}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "OrderGenerator.Presentation", "OrderGenerator.Presentation\OrderGenerator.Presentation.csproj", "{98ADF2F1-4A0D-437C-B265-9F49A90F9D6A}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{5C297464-1FD4-4015-87DF-35DAC8525F05}"
+	ProjectSection(SolutionItems) = preProject
+		Readme.txt = Readme.txt
+	EndProjectSection
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

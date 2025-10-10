@@ -121,7 +121,6 @@ public class FixApplication : MessageCracker, IApplication, IFixMessageService
             _logger.LogInformation("Order {clOrdID} sent via FIX - Symbol: {Symbol}, Side: {Side}, Qty: {Quantity}, Price: {Price}",
                 clOrdID, order.Symbol, order.Side, order.Quantity, order.Price);
 
-            // Wait for response with timeout
             var timeoutTask = Task.Delay(TimeSpan.FromSeconds(10));
             var completedTask = await Task.WhenAny(tcs.Task, timeoutTask);
 
