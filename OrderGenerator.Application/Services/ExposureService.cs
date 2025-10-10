@@ -1,5 +1,4 @@
-﻿// OrderGenerator.Application/Services/ExposureService.cs
-using OrderGenerator.Application.Interfaces;
+﻿using OrderGenerator.Application.Interfaces;
 using OrderGenerator.Application.DTOs;
 using Microsoft.Extensions.Logging;
 
@@ -20,7 +19,6 @@ public class ExposureService : IExposureService
         {
             _logger.LogInformation("Calling OrderAccumulator API for exposures");
 
-            // Criar HttpClient localmente
             var handler = new HttpClientHandler
             {
                 ServerCertificateCustomValidationCallback = (message, cert, chain, errors) => true
@@ -46,7 +44,6 @@ public class ExposureService : IExposureService
         {
             _logger.LogError(ex, "Error calling OrderAccumulator API");
 
-            // Fallback
             return new List<ExposureDto>
             {
                 new ExposureDto { Symbol = "PETR4", CurrentExposure = 100000000, Id = Guid.NewGuid() },
@@ -69,7 +66,6 @@ public class ExposureService : IExposureService
 
             using var client = new HttpClient(handler);
 
-            // Chamar o endpoint de reset do OrderAccumulator (POST sem body)
             var response = await client.PostAsync("https://localhost:5000/api/Exposure", null);
 
             if (response.IsSuccessStatusCode)
@@ -77,7 +73,6 @@ public class ExposureService : IExposureService
                 var responseContent = await response.Content.ReadAsStringAsync();
                 _logger.LogInformation("OrderAccumulator reset successfully: {Response}", responseContent);
 
-                // Desserializar a resposta para pegar a mensagem
                 var result = System.Text.Json.JsonSerializer.Deserialize<ResetResponseDto>(responseContent);
                 return result?.Message ?? "Reset completed successfully";
             }

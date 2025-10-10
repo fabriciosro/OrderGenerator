@@ -133,8 +133,6 @@ const OrderForm = () => {
         try {
             const response = await exposureService.resetAccumulator();
             console.log("Reset response:", response);
-/*            alert(response.message || "Reset realizado com sucesso");*/
-
             // Recarregar as exposições após o reset
             await handleGetExposures();
         } catch (error) {
@@ -376,14 +374,14 @@ const OrderForm = () => {
                     </div>
 
                     {/* Debug: Mostrar o objeto completo para verificação */}
-                    {process.env.NODE_ENV === 'development' && (
-                        <details style={{ marginTop: '1rem', padding: '0.5rem', background: '#f5f5f5', borderRadius: '4px' }}>
-                            <summary style={{ cursor: 'pointer', fontWeight: 'bold' }}>Debug (Response Completo)</summary>
-                            <pre style={{ marginTop: '0.5rem', fontSize: '0.8rem', whiteSpace: 'pre-wrap' }}>
-                                {JSON.stringify(result, null, 2)}
-                            </pre>
-                        </details>
-                    )}
+                    {/*{process.env.NODE_ENV === 'development' && (*/}
+                    {/*    <details style={{ marginTop: '1rem', padding: '0.5rem', background: '#f5f5f5', borderRadius: '4px' }}>*/}
+                    {/*        <summary style={{ cursor: 'pointer', fontWeight: 'bold' }}>Debug (Response Completo)</summary>*/}
+                    {/*        <pre style={{ marginTop: '0.5rem', fontSize: '0.8rem', whiteSpace: 'pre-wrap' }}>*/}
+                    {/*            {JSON.stringify(result, null, 2)}*/}
+                    {/*        </pre>*/}
+                    {/*    </details>*/}
+                    {/*)}*/}
                 </div>
             )}
 
