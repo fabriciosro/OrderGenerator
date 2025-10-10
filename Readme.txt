@@ -1,4 +1,33 @@
-﻿
+﻿📋 Visão Geral
+
+Sistema de trading completo composto por duas aplicações que se comunicam via protocolo FIX 4.4:
+
+OrderGenerator: Frontend React + Backend .NET para geração de ordens
+
+OrderAccumulator: Backend .NET para processamento e controle de risco de ordens
+
+
+OrderGenerator - Clean Architecture
+
+OrderGenerator/
+├── Domain/          ← Entidades e regras de negócio
+├── Application/     ← Casos de uso e DTOs
+├── Infrastructure/  ← Implementação FIX Client
+└── Presentation/    ← Web API + Frontend React
+
+✅ Interface web responsiva para criação de ordens
+
+✅ Validação de dados client-side e server-side
+
+✅ Símbolos disponíveis: PETR4, VALE3, VIIA4
+
+✅ Lados: Compra/Venda
+
+✅ Comunicação FIX 4.4 com OrderAccumulator
+
+✅ Exibição de resultados em tempo real
+
+
 📥 Instalação e Execução Pré-requisitos
 
 .NET 8.0 SDK
