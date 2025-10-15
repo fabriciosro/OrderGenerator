@@ -30,25 +30,10 @@ builder.Services.AddCors(options =>
     });
 });
 
-// Add SPA static files
+// Add SPA static files 
 builder.Services.AddSpaStaticFiles(configuration =>
 {
     configuration.RootPath = "wwwroot";
-});
-
-builder.Services.AddHttpsRedirection(options =>
-{
-    options.RedirectStatusCode = StatusCodes.Status307TemporaryRedirect;
-    options.HttpsPort = 7001;
-});
-
-builder.WebHost.ConfigureKestrel(options =>
-{
-    options.ListenLocalhost(7001, listenOptions =>
-    {
-        listenOptions.UseHttps();
-    });
-    options.ListenLocalhost(5002);
 });
 
 var app = builder.Build();
@@ -61,17 +46,39 @@ if (app.Environment.IsDevelopment())
 }
 
 app.UseCors();
-app.UseStaticFiles();
-app.UseSpaStaticFiles();
 
 app.UseHttpsRedirection();
+app.UseStaticFiles();       
+app.UseSpaStaticFiles();     
+
+app.UseRouting();           
+app.UseAuthorization();     
 
 app.MapControllers();
 
-// SPA fallback
+// SPA fallback 
 app.MapFallbackToFile("index.html");
 
-var port = 5002;
-var url = $"http://localhost:{port}";
+if (app.Environment.IsDevelopment())
+{
+    app.Lifetime.ApplicationStarted.Register(() =>
+    {
+        var url = "https://localhost:7001";
+        try
+        {
+            Task.Delay(1000).Wait();
+            System.Diagnostics.Process.Start(new System.Diagnostics.ProcessStartInfo
+            {
+                FileName = url,
+                UseShellExecute = true
+            });
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine($"Could not open browser: {ex.Message}");
+            Console.WriteLine($"Please open manually: {url}");
+        }
+    });
+}
 
-app.Run(url);
+app.Run();

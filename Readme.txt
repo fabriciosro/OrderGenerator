@@ -117,7 +117,7 @@ dotnet run
 
 3. Acesse a aplicação
 
-Abra: http://localhost:5000
+Abra: https://localhost:7001/swagger
 
 Crie ordens e observe os resultados
 
